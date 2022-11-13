@@ -1,9 +1,9 @@
 {
   "compilerOptions": {
-    "target": "es2016",                                  
-    "lib": ["ES2016", "ESNext"],                                    
+    "target": "ES2017",                                  
+    "lib": ["ES2017", "ESNext"],                                    
     "experimentalDecorators": true,                  
-    "module": "commonjs",                               
+    "module": "CommonJS",                               
     "outDir": "./dist",                                
     "esModuleInterop": true,                           
     "forceConsistentCasingInFileNames": true,           

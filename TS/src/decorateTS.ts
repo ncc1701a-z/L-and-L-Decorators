@@ -1,4 +1,5 @@
 import { ImportantDecorator, LogTimingDecorator, TimingDecorator } from "./decorators/perfDecorators";
+import { delay } from "./helpers";
 import Book from "./models/book.model";
 
 const books: Array<Book> = [
@@ -9,13 +10,6 @@ const books: Array<Book> = [
     new Book('978-1617292392', 'Soft Skills: The Software Developer\'s Life Manual', 'John Sonmez', 2015),
 ];
 
-function delay<T>(time: number, data: T): Promise<T> {
-    return new Promise((resolve) => {
-        setTimeout(() => {
-            resolve(data);
-        }, time);
-    });
-}
 
 @LogTimingDecorator
 class BookRepository {

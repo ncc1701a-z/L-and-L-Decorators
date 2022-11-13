@@ -4,7 +4,8 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "dev": "npx ts-node src/index.ts"
+    "ts": "npx ts-node src/decorateTS.ts",
+    "vanilla": "npx ts-node src/decorateVanilla.ts"
   },
   "devDependencies": {
     "@types/node": "^18.11.9",
