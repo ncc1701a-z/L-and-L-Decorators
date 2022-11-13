@@ -1,4 +1,4 @@
-import { CacheDecorator, ImportantDecorator, LogTimingDecorator, TimingDecorator } from "./decorators/perfDecorators";
+import { ImportantDecorator, LogTimingDecorator, TimingDecorator } from "./decorators/perfDecorators";
 import Book from "./models/book.model";
 
 const books: Array<Book> = [
@@ -25,7 +25,7 @@ class BookRepository {
         this.books = books;
     }
 
-    @TimingDecorator()
+    @TimingDecorator(true)
     async getBookById(@ImportantDecorator id: string): Promise<Book | undefined> {
         return delay(50, this.books.find((p) => { return p.id == id }));
     };
