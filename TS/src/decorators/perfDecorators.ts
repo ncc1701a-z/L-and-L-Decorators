@@ -20,7 +20,7 @@ export function TimingDecorator(enableCaching = false) {
     return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
         const decoratedMethod = descriptor.value;
 
-        let origFunc: any;
+        let origFunc: Function;
 
         const cache = new Map<string, any>();
 
@@ -34,17 +34,23 @@ export function TimingDecorator(enableCaching = false) {
                 return decoratedMethod.apply(context, args);
             }
 
-            if (enableCaching) {
+            async function caching(cache: Map<string, any>, key: string, originalMethod: Function, context: any) {
+                let origFunc: Function;
+            
                 if (cache.get(key)) {
-                    start = performance.now();
                     origFunc = await cache.get(key);
-                    end = performance.now();
                 } else {
-                    start = performance.now();
-                    origFunc = await invokeOriginalMethod(this);
+                    origFunc = await originalMethod(context);
                     cache.set(key, origFunc);
-                    end = performance.now();
                 }
+            
+                return origFunc;
+            }
+
+            if (enableCaching) {
+                start = performance.now();
+                origFunc = await caching(cache, key, invokeOriginalMethod, this);
+                end = performance.now();
             } else {
                 start = performance.now();
                 origFunc = await invokeOriginalMethod(this);
@@ -63,8 +69,8 @@ export function TimingDecorator(enableCaching = false) {
                 });
             }
 
-            if ((this as any).__timings) {
-                (this as any).__timings.push({
+            if ((this as ThisWithTimings).__timings) {
+                (this as ThisWithTimings).__timings.push({
                     method: propertyKey,
                     time: delta,
                     importantParams
@@ -82,29 +88,11 @@ export function ImportantDecorator(target: Object, propertyKey: string | symbol,
     let existingImportantParameters: number[] = Reflect.getOwnMetadata(importantMetadataKey, target, propertyKey) || [];
     existingImportantParameters.push(parameterIndex);
 
-    return Reflect.defineMetadata(importantMetadataKey, existingImportantParameters, target, propertyKey);
+    Reflect.defineMetadata(importantMetadataKey, existingImportantParameters, target, propertyKey);
 }
 
-export function CacheDecorator() {
-    return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
-        const value = descriptor.value;
 
-        let cache = new Map<string, any>();
 
-        descriptor.value = async function (...args: Array<any>) {
-            const key = JSON.stringify(args);
-
-            if (cache.has(key)) {
-                return cache.get(key);
-            } else {
-                const origFunc = value.apply(this, args);
-                cache.set(key, origFunc);
-
-                return origFunc
-            }
-        };
-    }
-}
 
 
 

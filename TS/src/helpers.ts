@@ -18,3 +18,4 @@ export function param(paramIndex: number, decorator: any) {
         decorator(target, propertyKey, paramIndex);
     }
 }
+
